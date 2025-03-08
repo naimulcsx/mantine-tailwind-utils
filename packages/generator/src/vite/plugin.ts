@@ -3,7 +3,7 @@ import { type Plugin } from 'vite';
 import path from 'path';
 import { processThemeContent } from 'src/core/process-theme-content.js';
 
-export function mantineThemePlugin({
+export function mantineTailwindThemePlugin({
   themePath,
   outputPath,
 }: {
@@ -39,8 +39,7 @@ export function mantineThemePlugin({
             );
           } else {
             console.log(
-              '[Vite Mantine Theme Plugin] Theme file updated successfully!',
-              new Date().toISOString()
+              '[Vite Mantine Theme Plugin] Theme file updated successfully!'
             );
           }
         });
