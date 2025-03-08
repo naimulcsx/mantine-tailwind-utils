@@ -27,5 +27,8 @@
     "comment-parser": "^1.4.1",
     "zod": "^3.24.2",
     "vite": "^6.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
