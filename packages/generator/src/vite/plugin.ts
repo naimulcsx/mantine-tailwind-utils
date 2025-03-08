@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { type Plugin } from 'vite';
 import path from 'path';
-import { processThemeContent } from 'src/core/process-theme-content.js';
+import { processThemeContent } from '../core/process-theme-content.js';
 
 export function mantineTailwindThemePlugin({
   themePath,

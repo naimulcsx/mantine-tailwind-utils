@@ -1,7 +1,7 @@
 {
   "name": "@mantine-tailwind-utils/generator",
   "description": "A utility package that bridges Mantine UI and Tailwind CSS, making them work seamlessly together with less-efforts.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/naimulcsx/mantine-tailwind-utils.git"
