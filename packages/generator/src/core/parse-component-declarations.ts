@@ -9,6 +9,7 @@ export function parseComponentDeclarations(content: string) {
   const styles: {
     component: string;
     target: string;
+    props?: string[];
     variant?: string;
     size?: string;
     classNames: string[];
@@ -21,6 +22,7 @@ export function parseComponentDeclarations(content: string) {
     let target: string | null = null;
     let description: string | null = null;
     let component: string | null = null;
+    let props: string[] | undefined;
 
     for (const line of comment.source) {
       if (line.tokens.tag === '@component') {
@@ -38,7 +40,15 @@ export function parseComponentDeclarations(content: string) {
        * We've found the component type, now we need to parse the target, variant, size etc
        */
       if (component) {
-        if (line.tokens.tag === '@target') {
+        if (line.tokens.tag === '@props') {
+          props = [
+            line.tokens.name,
+            ...line.tokens.description
+              .split('|')
+              .map((prop) => prop.trim())
+              .filter(Boolean),
+          ];
+        } else if (line.tokens.tag === '@target') {
           target = line.tokens.name;
           description = line.tokens.description;
         }
@@ -112,6 +122,7 @@ export function parseComponentDeclarations(content: string) {
         styles.push({
           component,
           target,
+          props,
           variant,
           size,
           classNames,
@@ -126,5 +137,44 @@ export function parseComponentDeclarations(content: string) {
     }
   }
 
-  return styles;
+  const componentsMap = new Map<
+    string,
+    {
+      component: string;
+      props?: string[];
+      styles: {
+        target: string;
+        variant?: string;
+        size?: string;
+        classNames: string[];
+        disabled?: boolean;
+        active?: boolean;
+        order?: string;
+      }[];
+    }
+  >();
+
+  for (const style of styles) {
+    const { component, props, ...styleProps } = style;
+
+    if (!componentsMap.has(component)) {
+      componentsMap.set(component, {
+        component,
+        props,
+        styles: [],
+      });
+    }
+
+    componentsMap.get(component)?.styles.push({
+      target: styleProps.target,
+      variant: styleProps.variant,
+      size: styleProps.size,
+      classNames: styleProps.classNames,
+      disabled: styleProps.disabled,
+      active: styleProps.active,
+      order: styleProps.order,
+    });
+  }
+
+  return Array.from(componentsMap.values());
 }

@@ -38,10 +38,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: undefined,
-        size: undefined,
-        classNames: [],
+        styles: [
+          {
+            target: 'root',
+            variant: undefined,
+            size: undefined,
+            classNames: [],
+          },
+        ],
       },
     ]);
   });
@@ -57,10 +61,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        size: undefined,
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: undefined,
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -76,10 +84,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -95,10 +107,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: undefined,
-        size: 'lg',
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: undefined,
+            size: 'lg',
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -114,10 +130,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -147,24 +167,26 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
-      },
-      {
-        component: 'Button',
-        target: 'root',
-        variant: 'secondary',
-        size: 'sm',
-        classNames: ['text-lg', 'font-bold', 'rounded-md'],
-      },
-      {
-        component: 'Button',
-        target: 'root',
-        variant: 'tertiary',
-        size: undefined,
-        classNames: ['bg-red-100'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+          {
+            target: 'root',
+            variant: 'secondary',
+            size: 'sm',
+            classNames: ['text-lg', 'font-bold', 'rounded-md'],
+          },
+          {
+            target: 'root',
+            variant: 'tertiary',
+            size: undefined,
+            classNames: ['bg-red-100'],
+          },
+        ],
       },
     ]);
   });
@@ -190,24 +212,36 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
       {
         component: 'Anchor',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-2xl', 'underline'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-2xl', 'underline'],
+          },
+        ],
       },
       {
         component: 'Text',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-lg'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-lg'],
+          },
+        ],
       },
     ]);
   });
@@ -227,10 +261,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        size: 'lg',
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            size: 'lg',
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -246,11 +284,13 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: undefined,
-        size: undefined,
-        disabled: true,
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            disabled: true,
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -266,10 +306,14 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        disabled: true,
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            disabled: true,
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });
@@ -285,10 +329,40 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
-        target: 'root',
-        variant: 'primary',
-        active: true,
-        classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            active: true,
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should parse active state with variants', () => {
+    const source = `
+  /**
+   * @component Button
+   * @props fullWidth | loading | leftSection | rightSection
+   * 
+   * @target root @variant primary @active [ text-2xl font-bold rounded-md ]
+   */
+  `;
+
+    expect(parseComponentDeclarations(source)).toEqual([
+      {
+        component: 'Button',
+        props: ['fullWidth', 'loading', 'leftSection', 'rightSection'],
+        styles: [
+          {
+            target: 'root',
+            variant: 'primary',
+            active: true,
+            classNames: ['text-2xl', 'font-bold', 'rounded-md'],
+          },
+        ],
       },
     ]);
   });

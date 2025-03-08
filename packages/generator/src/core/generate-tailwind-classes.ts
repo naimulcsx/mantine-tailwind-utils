@@ -4,35 +4,37 @@ export function generateTailwindClasses(
   styles: ReturnType<typeof parseComponentDeclarations>
 ): string {
   return styles
-    .map(({ variant, size, classNames, disabled, active, order }) => {
-      const selectorParts: string[] = [];
+    .flatMap(({ styles }) =>
+      styles.map(({ variant, size, classNames, disabled, active, order }) => {
+        const selectorParts: string[] = [];
 
-      if (variant) {
-        selectorParts.push(`[data-variant='${variant}']`);
-      }
+        if (variant) {
+          selectorParts.push(`[data-variant='${variant}']`);
+        }
 
-      if (size) {
-        selectorParts.push(`[data-size='${size}']`);
-      }
+        if (size) {
+          selectorParts.push(`[data-size='${size}']`);
+        }
 
-      if (disabled) {
-        selectorParts.push(`[data-disabled='true']`);
-      }
+        if (disabled) {
+          selectorParts.push(`[data-disabled='true']`);
+        }
 
-      if (active) {
-        selectorParts.push(`[data-active='true']`);
-      }
+        if (active) {
+          selectorParts.push(`[data-active='true']`);
+        }
 
-      if (order) {
-        selectorParts.push(`[data-order='${order}']`);
-      }
+        if (order) {
+          selectorParts.push(`[data-order='${order}']`);
+        }
 
-      const selector =
-        selectorParts.length > 0 ? `[&${selectorParts.join('&&')}]` : '&';
+        const selector =
+          selectorParts.length > 0 ? `[&${selectorParts.join('&&')}]` : '&';
 
-      return classNames
-        .map((className) => `${selector}:${className}`)
-        .join(' ');
-    })
+        return classNames
+          .map((className) => `${selector}:${className}`)
+          .join(' ');
+      })
+    )
     .join(' ');
 }

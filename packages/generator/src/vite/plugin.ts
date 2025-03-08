@@ -1,63 +1,71 @@
-import fs from 'fs';
+import { promises as fs } from 'fs';
 import { type Plugin } from 'vite';
 import path from 'path';
 import { processThemeContent } from '../core/process-theme-content.js';
+import { generateComponents } from '../core/generate-components.js';
 
 export function mantineTailwindThemePlugin({
   themePath,
   outputPath,
+  components,
 }: {
   themePath: string;
   outputPath: string;
+  components?:
+    | {
+        enabled: true;
+        outputPath: string;
+      }
+    | {
+        enabled: false;
+      };
 }): Plugin {
   let writeLock = false;
 
-  const processFile = () => {
+  const processFile = async () => {
     if (writeLock) return;
     writeLock = true;
 
-    fs.readFile(themePath, 'utf-8', (err, data) => {
-      if (err) {
-        console.error(
-          '[Vite Mantine Theme Plugin] Error reading theme file:',
-          err
-        );
-        writeLock = false;
-        return;
+    try {
+      const data = await fs.readFile(themePath, 'utf-8');
+      const updatedTheme = processThemeContent(data);
+
+      // Write components file if enabled
+      if (components && components.enabled) {
+        try {
+          const componentsFile = generateComponents(data);
+          await fs.writeFile(components.outputPath, componentsFile, 'utf-8');
+          console.log(
+            '[Vite Mantine Theme Plugin] Components file updated successfully!'
+          );
+        } catch (writeErr) {
+          console.error(
+            '[Vite Mantine Theme Plugin] Error writing components file:',
+            writeErr
+          );
+        }
       }
 
-      try {
-        const updatedTheme = processThemeContent(data);
-
-        // Write the updated theme file to outputPath
-        fs.writeFile(outputPath, updatedTheme, 'utf-8', (writeErr) => {
-          writeLock = false;
-          if (writeErr) {
-            console.error(
-              '[Vite Mantine Theme Plugin] Error writing theme file:',
-              writeErr
-            );
-          } else {
-            console.log(
-              '[Vite Mantine Theme Plugin] Theme file updated successfully!'
-            );
-          }
-        });
-      } catch (parseErr) {
-        console.error(
-          '[Vite Mantine Theme Plugin] Error processing theme file:',
-          parseErr
-        );
-        writeLock = false;
-      }
-    });
+      // Write theme file
+      await fs.writeFile(outputPath, updatedTheme, 'utf-8');
+      console.log(
+        '[Vite Mantine Theme Plugin] Theme file updated successfully!'
+      );
+    } catch (err) {
+      console.error(
+        '[Vite Mantine Theme Plugin] Error processing theme file:',
+        err
+      );
+    } finally {
+      writeLock = false;
+    }
   };
 
   return {
     name: 'vite-plugin-mantine-theme',
     enforce: 'post',
-    buildStart() {
-      processFile();
+    async buildStart() {
+      await processFile();
     },
     configureServer(server) {
       server.watcher.add(themePath);

@@ -1,34 +1,30 @@
-import { generateTailwindClasses } from "./generate-tailwind-classes.js";
-import { parseComponentDeclarations } from "./parse-component-declarations.js";
+import { generateTailwindClasses } from './generate-tailwind-classes.js';
+import { parseComponentDeclarations } from './parse-component-declarations.js';
 
 export function processThemeContent(content: string): string {
   try {
-    const parsedStyles = parseComponentDeclarations(content);
+    const parsedComponents = parseComponentDeclarations(content);
     const componentClassNames: Record<string, Record<string, string>> = {};
 
-    // Group styles by component
-    parsedStyles.forEach(({ target, classNames, component, ...conditions }) => {
-      if (!component) {
-        console.warn(
-          "[Mantine Theme Processor] Skipping style, no component type found."
-        );
-        return;
-      }
-
+    // Process each component
+    parsedComponents.forEach(({ component, styles }) => {
       if (!componentClassNames[component]) {
         componentClassNames[component] = {};
       }
 
-      const key = target;
-      const classNameString = generateTailwindClasses([
-        { target, classNames, component, ...conditions },
-      ]);
+      // Process each style for the component
+      styles.forEach(({ target, classNames, ...conditions }) => {
+        const key = target;
+        const classNameString = generateTailwindClasses([
+          { component, styles: [{ target, classNames, ...conditions }] },
+        ]);
 
-      if (!componentClassNames[component][key]) {
-        componentClassNames[component][key] = classNameString;
-      } else {
-        componentClassNames[component][key] += ` ${classNameString}`;
-      }
+        if (!componentClassNames[component][key]) {
+          componentClassNames[component][key] = classNameString;
+        } else {
+          componentClassNames[component][key] += ` ${classNameString}`;
+        }
+      });
     });
 
     let updatedContent = content;
@@ -44,7 +40,7 @@ export function processThemeContent(content: string): string {
       // Use a more specific regex pattern to target only the classNames of the current component
       const componentRegex = new RegExp(
         `(${component}:\\s*${component}\\.extend\\([^)]*classNames:\\s*)\\{[^}]*\\}`,
-        "s"
+        's'
       );
 
       updatedContent = updatedContent.replace(
@@ -56,7 +52,7 @@ export function processThemeContent(content: string): string {
     return updatedContent;
   } catch (error) {
     console.error(
-      "[Mantine Theme Processor] Error processing theme content:",
+      '[Mantine Theme Processor] Error processing theme content:',
       error
     );
     return content; // Return original content on error
