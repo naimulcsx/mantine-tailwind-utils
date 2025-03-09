@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { {{componentName}} } from "../app/components";
+import { {{componentName}} } from "../index";
 
 const meta = {
   title: "Components/{{componentName}}",
@@ -12,14 +12,14 @@ const meta = {
     {{#if hasVariants}}
     variant: {
       control: { type: "select" },
-      options: [{{variants}}],
+      options: [{{{variants}}}],
       description: "{{componentName}} variant style",
     },
     {{/if}}
     {{#if hasSizes}}
     size: {
       control: { type: "select" },
-      options: [{{sizes}}],
+      options: [{{{sizes}}}],
       description: "{{componentName}} size",
     },
     {{/if}}
@@ -37,10 +37,10 @@ type Story = StoryObj<typeof meta>;
 // {{name}} {{../componentName}} story
 export const {{name}}: Story = {
   args: {
-    {{#if variant}}variant: {{{variant}}},{{/if}}
-    {{#if size}}size: {{{size}}},{{/if}}
-    {{#if disabled}}disabled: {{{disabled}}},{{/if}}
-    children: {{{children}}},
+    {{#if args.variant}}variant: {{{args.variant}}},{{/if}}
+    {{#if args.size}}size: {{{args.size}}},{{/if}}
+    {{#if args.disabled}}disabled: {{{args.disabled}}},{{/if}}
+    children: {{{args.children}}},
   },
 };
 
