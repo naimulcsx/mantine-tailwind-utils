@@ -1,0 +1,24 @@
+export function withRestrictedProps<
+  TElementType extends ElementType,
+  TOriginalProps extends object,
+  TAllowedProps extends keyof TOriginalProps,
+  TOverrideProps extends Partial<Record<TAllowedProps, any>> = {}
+>(
+  displayName: string,
+  Component: ComponentType<TOriginalProps>,
+  defaultProps: Partial<Pick<TOriginalProps, TAllowedProps>> = {}
+) {
+  function RestrictedComponent(
+    props: PropsWithChildren<
+      Omit<Pick<TOriginalProps, TAllowedProps>, keyof TOverrideProps> &
+        TOverrideProps &
+        React.ComponentPropsWithoutRef<TElementType>
+    >
+  ) {
+    return <Component {...(defaultProps as TOriginalProps)} {...props} />;
+  }
+
+  RestrictedComponent.displayName = displayName;
+
+  return RestrictedComponent;
+}

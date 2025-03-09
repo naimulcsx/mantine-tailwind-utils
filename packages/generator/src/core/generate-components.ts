@@ -8,7 +8,7 @@ export function generateComponents(content: string) {
 
   let file = getImports(parsedComponents.map(({ component }) => component));
 
-  file += getWithRestrictedProps();
+  file += getUtils();
 
   parsedComponents.forEach(({ component, props, styles }) => {
     const variants: string[] = [];
@@ -34,44 +34,16 @@ export function generateComponents(content: string) {
 }
 
 const getImports = (components: string[]) => {
-  return `
-import type { ComponentType, PropsWithChildren } from "react";
-${components
-  .map(
-    (component) =>
-      `import { ${component} as Mantine${component}, type ${component}Props as Mantine${component}Props } from "@mantine/core";`
-  )
-  .join('\n')}
-`;
+  const template = getCompiledTemplate('imports');
+  return template({ components });
 };
 
-const getWithRestrictedProps = () => {
-  return `export function withRestrictedProps<
-  TOriginalProps extends object,
-  TAllowedProps extends keyof TOriginalProps,
-  TOverrideProps extends Partial<Record<TAllowedProps, any>> = {}
->(
-  componentName: string,
-  Component: ComponentType<TOriginalProps>,
-  defaultProps: Partial<Pick<TOriginalProps, TAllowedProps>> = {}
-) {
-  function RestrictedComponent(
-    props: PropsWithChildren<
-      Omit<Pick<TOriginalProps, TAllowedProps>, keyof TOverrideProps> &
-        TOverrideProps & { className?: string }
-    >
-  ) {
-    return <Component {...(defaultProps as TOriginalProps)} {...props} />;
-  }
-
-  RestrictedComponent.displayName = componentName;
-
-  return RestrictedComponent;
-}
-`;
+const getUtils = () => {
+  const template = getCompiledTemplate('utils');
+  return template({});
 };
 
-function getCompiledTemplate(templateName: string) {
+const getCompiledTemplate = (templateName: string) => {
   const templatePath = path.resolve(
     __dirname,
     '../templates',
@@ -79,7 +51,7 @@ function getCompiledTemplate(templateName: string) {
   );
   const templateSource = fs.readFileSync(templatePath, 'utf-8');
   return Handlebars.compile(templateSource);
-}
+};
 
 const getButton = ({
   props,
