@@ -1,3 +1,6 @@
+import { withRestrictedProps } from "../with-restricted-props";
+import { Button as MantineButton, type ButtonProps as MantineButtonProps } from "@mantine/core";
+
 interface ButtonOverrides {
 {{#if hasVariants}}
   variant?: {{{variantTypes}}};

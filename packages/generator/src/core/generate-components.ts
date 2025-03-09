@@ -1,51 +1,34 @@
 import { getCompiledTemplate } from '../templates/get-template.js';
-import { parseComponentDeclarations } from './parse-component-declarations.js';
+import { ComponentDeclaration } from './parse-component-declarations.js';
 
-export function generateComponents(content: string) {
-  const parsedComponents = parseComponentDeclarations(content);
+export function generateComponents(
+  componentDeclarations: ComponentDeclaration[]
+) {
+  const files = [
+    {
+      path: 'with-restricted-props.tsx',
+      fileContent: getUtils(),
+    },
+    {
+      path: 'Button/Button.tsx',
+      fileContent: getButton({
+        props: componentDeclarations[0]?.props,
+        variants: componentDeclarations[0]?.variants,
+        sizes: componentDeclarations[0]?.sizes,
+      }),
+    },
+    {
+      path: 'Button/Button.stories.tsx',
+      fileContent: getButtonStory({
+        props: componentDeclarations[0]?.props,
+        variants: componentDeclarations[0]?.variants,
+        sizes: componentDeclarations[0]?.sizes,
+      }),
+    },
+  ];
 
-  let fileContent = getImports(
-    parsedComponents.map(({ component }) => component)
-  );
-
-  fileContent += getUtils();
-
-  const stories: Array<{ component: string; fileContent: string }> = [];
-
-  parsedComponents.forEach(({ component, props, styles }) => {
-    const variants: string[] = [];
-    const sizes: string[] = [];
-
-    styles.forEach(({ variant, size }) => {
-      if (variant && !variants.includes(variant)) {
-        variants.push(variant);
-      }
-      if (size && !sizes.includes(size)) {
-        sizes.push(size);
-      }
-    });
-
-    switch (component) {
-      case 'Button':
-        fileContent += `\n${getButton({ props, variants, sizes })}\n`;
-        stories.push({
-          component,
-          fileContent: getButtonStory({ props, variants, sizes }),
-        });
-        break;
-    }
-  });
-
-  return {
-    fileContent,
-    stories,
-  };
+  return { files };
 }
-
-const getImports = (components: string[]) => {
-  const template = getCompiledTemplate('imports');
-  return template({ components });
-};
 
 const getUtils = () => {
   const template = getCompiledTemplate('utils');

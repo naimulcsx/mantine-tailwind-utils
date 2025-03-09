@@ -1,13 +1,15 @@
 import { generateTailwindClasses } from './generate-tailwind-classes.js';
-import { parseComponentDeclarations } from './parse-component-declarations.js';
+import { ComponentDeclaration } from './parse-component-declarations.js';
 
-export function processThemeContent(content: string): string {
+export function processThemeContent(
+  sourceThemeContent: string,
+  componentDeclarations: ComponentDeclaration[]
+): string {
   try {
-    const parsedComponents = parseComponentDeclarations(content);
     const componentClassNames: Record<string, Record<string, string>> = {};
 
     // Process each component
-    parsedComponents.forEach(({ component, styles }) => {
+    componentDeclarations.forEach(({ component, styles }) => {
       if (!componentClassNames[component]) {
         componentClassNames[component] = {};
       }
@@ -27,7 +29,7 @@ export function processThemeContent(content: string): string {
       });
     });
 
-    let updatedContent = content;
+    let updatedContent = sourceThemeContent;
 
     // Update each component's classNames separately
     Object.keys(componentClassNames).forEach((component) => {
@@ -55,6 +57,6 @@ export function processThemeContent(content: string): string {
       '[Mantine Theme Processor] Error processing theme content:',
       error
     );
-    return content; // Return original content on error
+    return sourceThemeContent; // Return original content on error
   }
 }

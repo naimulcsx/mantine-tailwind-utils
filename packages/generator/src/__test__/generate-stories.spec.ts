@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateComponents } from '../core/generate-components.js';
+import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
 const normalize = (str: string) => {
   return str.replace(/\n/g, '').replace(/\s+/g, ' ');
 };
@@ -7,7 +8,7 @@ const normalize = (str: string) => {
 const expected = [
   `
 import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from "../index";
+import { Button } from "./Button";
 
 const meta = {
   title: "Components/Button",
@@ -102,7 +103,8 @@ describe('generate-stories', () => {
      * @target root @variant primary [ bg-red-500 hover:bg-red-900 focus:outline-none focus-within:ring-2 focus-within:ring-yellow-500 text-xl ]
      */
     `;
-    const result = generateComponents(content);
+    const componentDeclarations = parseComponentDeclarations(content);
+    const result = generateComponents(componentDeclarations);
 
     expect(normalize(result.stories[0].fileContent)).toBe(
       normalize(expected[0])

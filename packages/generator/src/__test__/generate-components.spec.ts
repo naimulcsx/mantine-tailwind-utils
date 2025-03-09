@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { generateComponents } from '../core/generate-components.js';
+import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
 
 const expected = [
   `
@@ -79,8 +80,8 @@ const normalize = (str: string) => {
 describe('generateComponents', () => {
   it('should generate the default file', () => {
     const content = ``;
-
-    const result = generateComponents(content);
+    const componentDeclarations = parseComponentDeclarations(content);
+    const result = generateComponents(componentDeclarations);
 
     expect(normalize(result.fileContent)).toBe(normalize(expected[0]));
   });
@@ -95,7 +96,8 @@ describe('generateComponents', () => {
      * @target root @variant primary [ bg-red-500 hover:bg-red-900 focus:outline-none focus-within:ring-2 focus-within:ring-yellow-500 text-xl ]
      */
     `;
-    const result = generateComponents(content);
+    const componentDeclarations = parseComponentDeclarations(content);
+    const result = generateComponents(componentDeclarations);
     expect(normalize(result.fileContent)).toBe(normalize(expected[1]));
   });
 });

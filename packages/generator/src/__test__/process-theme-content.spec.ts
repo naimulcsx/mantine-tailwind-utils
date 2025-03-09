@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { processThemeContent } from '../core/process-theme-content.js';
+import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
 
 const sources = [
   `
@@ -152,12 +153,14 @@ export default theme;
 
 describe('processThemeContent', () => {
   it('should process the theme content', () => {
-    const result = processThemeContent(sources[0]!);
-    expect(result).toBe(expected[0]!);
+    const componentDeclarations = parseComponentDeclarations(sources[0]);
+    const result = processThemeContent(sources[0], componentDeclarations);
+    expect(result).toBe(expected[0]);
   });
 
   it('should process the theme content with multiple components', () => {
-    const result = processThemeContent(sources[1]!);
-    expect(result).toBe(expected[1]!);
+    const componentDeclarations = parseComponentDeclarations(sources[1]);
+    const result = processThemeContent(sources[1], componentDeclarations);
+    expect(result).toBe(expected[1]);
   });
 });

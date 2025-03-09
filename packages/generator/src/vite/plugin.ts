@@ -3,15 +3,7 @@ import { type Plugin } from 'vite';
 import path from 'path';
 import { processThemeContent } from '../core/process-theme-content.js';
 import { generateComponents } from '../core/generate-components.js';
-
-type StoriesConfig =
-  | {
-      generate: true;
-      outputPath: string;
-    }
-  | {
-      generate: false;
-    };
+import { parseComponentDeclarations } from 'src/core/parse-component-declarations.js';
 
 export function mantineTailwindThemePlugin({
   themePath,
@@ -24,8 +16,8 @@ export function mantineTailwindThemePlugin({
     | false
     | {
         generate: true;
-        outputPath: string;
-        stories?: StoriesConfig;
+        outputDir: string;
+        stories?: boolean;
       }
     | {
         generate: false;
@@ -38,28 +30,41 @@ export function mantineTailwindThemePlugin({
     writeLock = true;
 
     try {
-      const data = await fs.readFile(themePath, 'utf-8');
-      const updatedTheme = processThemeContent(data);
+      const sourceThemeContent = await fs.readFile(themePath, 'utf-8');
 
-      // Write components file if enabled
+      const componentDeclarations =
+        parseComponentDeclarations(sourceThemeContent);
+
+      const updatedThemeContent = processThemeContent(
+        sourceThemeContent,
+        componentDeclarations
+      );
+
+      // Write theme file
+      await fs.writeFile(outputPath, updatedThemeContent, 'utf-8');
+
+      // Write Component Files + Stories
       if (components && components.generate) {
         try {
-          const { fileContent, stories } = generateComponents(data);
-          await fs.writeFile(components.outputPath, fileContent, 'utf-8');
+          let { files } = generateComponents(componentDeclarations);
 
-          if (components.stories?.generate) {
-            for (const story of stories) {
-              await fs.writeFile(
-                path.join(
-                  components.stories.outputPath,
-                  story.component + '.stories.tsx'
-                ),
-                story.fileContent,
-                'utf-8'
-              );
-            }
+          if (!components.stories) {
+            files = files.filter((file) => !file.path.endsWith('.stories.tsx'));
           }
 
+          for (const file of files) {
+            const dir = path.dirname(file.path);
+            if (dir !== '.') {
+              await fs.mkdir(path.join(components.outputDir, dir), {
+                recursive: true,
+              });
+            }
+            await fs.writeFile(
+              path.join(components.outputDir, file.path),
+              file.fileContent,
+              'utf-8'
+            );
+          }
           console.log(
             '[Vite Mantine Theme Plugin] Components file updated successfully!'
           );
@@ -71,8 +76,6 @@ export function mantineTailwindThemePlugin({
         }
       }
 
-      // Write theme file
-      await fs.writeFile(outputPath, updatedTheme, 'utf-8');
       console.log(
         '[Vite Mantine Theme Plugin] Theme file updated successfully!'
       );

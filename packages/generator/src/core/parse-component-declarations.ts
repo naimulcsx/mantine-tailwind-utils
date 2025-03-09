@@ -3,20 +3,38 @@ import { z } from 'zod';
 
 const componentTypeSchema = z.enum(['Button', 'Anchor', 'Text']);
 
-export function parseComponentDeclarations(content: string) {
-  const comments = parse(content);
+export interface StyleDefinition {
+  component: string;
+  target: string;
+  props?: string[];
+  variant?: string;
+  size?: string;
+  classNames: string[];
+  disabled?: boolean;
+  active?: boolean;
+  order?: string;
+}
 
-  const styles: {
-    component: string;
+export interface ComponentDeclaration {
+  component: string;
+  props?: string[];
+  variants?: string[];
+  sizes?: string[];
+  styles: {
     target: string;
-    props?: string[];
+    classNames: string[];
     variant?: string;
     size?: string;
-    classNames: string[];
     disabled?: boolean;
     active?: boolean;
     order?: string;
-  }[] = [];
+  }[];
+}
+
+export function parseComponentDeclarations(content: string) {
+  const comments = parse(content);
+
+  const styles: StyleDefinition[] = [];
 
   for (const comment of comments) {
     let target: string | null = null;
@@ -137,22 +155,7 @@ export function parseComponentDeclarations(content: string) {
     }
   }
 
-  const componentsMap = new Map<
-    string,
-    {
-      component: string;
-      props?: string[];
-      styles: {
-        target: string;
-        variant?: string;
-        size?: string;
-        classNames: string[];
-        disabled?: boolean;
-        active?: boolean;
-        order?: string;
-      }[];
-    }
-  >();
+  const componentsMap = new Map<string, ComponentDeclaration>();
 
   for (const style of styles) {
     const { component, props, ...styleProps } = style;
@@ -161,6 +164,8 @@ export function parseComponentDeclarations(content: string) {
       componentsMap.set(component, {
         component,
         props,
+        variants: [],
+        sizes: [],
         styles: [],
       });
     }
@@ -174,6 +179,23 @@ export function parseComponentDeclarations(content: string) {
       active: styleProps.active,
       order: styleProps.order,
     });
+  }
+
+  for (const component of componentsMap.values()) {
+    component.variants = [
+      ...new Set(
+        component.styles
+          .map((style) => style.variant)
+          .filter((variant): variant is string => variant !== undefined)
+      ),
+    ];
+    component.sizes = [
+      ...new Set(
+        component.styles
+          .map((style) => style.size)
+          .filter((size): size is string => size !== undefined)
+      ),
+    ];
   }
 
   return Array.from(componentsMap.values());

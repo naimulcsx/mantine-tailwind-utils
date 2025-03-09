@@ -38,11 +38,11 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: [],
+        sizes: [],
         styles: [
           {
             target: 'root',
-            variant: undefined,
-            size: undefined,
             classNames: [],
           },
         ],
@@ -61,11 +61,12 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: [],
         styles: [
           {
             target: 'root',
             variant: 'primary',
-            size: undefined,
             classNames: ['text-2xl', 'font-bold', 'rounded-md'],
           },
         ],
@@ -84,6 +85,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
@@ -107,10 +110,11 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: [],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
-            variant: undefined,
             size: 'lg',
             classNames: ['text-2xl', 'font-bold', 'rounded-md'],
           },
@@ -130,6 +134,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
@@ -167,6 +173,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary', 'secondary', 'tertiary'],
+        sizes: ['lg', 'sm'],
         styles: [
           {
             target: 'root',
@@ -183,7 +191,6 @@ describe('parseComponentDeclarations', () => {
           {
             target: 'root',
             variant: 'tertiary',
-            size: undefined,
             classNames: ['bg-red-100'],
           },
         ],
@@ -212,6 +219,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
@@ -223,6 +232,8 @@ describe('parseComponentDeclarations', () => {
       },
       {
         component: 'Anchor',
+        variants: ['primary'],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
@@ -234,6 +245,8 @@ describe('parseComponentDeclarations', () => {
       },
       {
         component: 'Text',
+        variants: ['primary'],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
@@ -261,6 +274,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: ['lg'],
         styles: [
           {
             target: 'root',
@@ -284,6 +299,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: [],
+        sizes: [],
         styles: [
           {
             target: 'root',
@@ -306,6 +323,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: [],
         styles: [
           {
             target: 'root',
@@ -329,6 +348,8 @@ describe('parseComponentDeclarations', () => {
     expect(result).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: [],
         styles: [
           {
             target: 'root',
@@ -354,6 +375,8 @@ describe('parseComponentDeclarations', () => {
     expect(parseComponentDeclarations(source)).toEqual([
       {
         component: 'Button',
+        variants: ['primary'],
+        sizes: [],
         props: ['fullWidth', 'loading', 'leftSection', 'rightSection'],
         styles: [
           {
