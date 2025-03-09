@@ -1,4 +1,4 @@
-import { getCompiledTemplate } from '../utils/get-template.js';
+import { getCompiledTemplate } from '../templates/get-template.js';
 import { parseComponentDeclarations } from './parse-component-declarations.js';
 
 export function generateComponents(content: string) {
