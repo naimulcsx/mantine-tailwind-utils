@@ -29,10 +29,14 @@ export function generateTailwindClasses(
         }
 
         const selector =
-          selectorParts.length > 0 ? `[&${selectorParts.join('&&')}]` : '&';
+          selectorParts.length > 0
+            ? `[&${selectorParts.join('&&')}]`
+            : undefined;
 
         return classNames
-          .map((className) => `${selector}:${className}`)
+          .map((className) =>
+            selector ? `${selector}:${className}` : className
+          )
           .join(' ');
       })
     )

@@ -130,4 +130,16 @@ describe('generateTailwindClasses', () => {
       "[&[data-variant='primary']&&[data-active='true']]:text-2xl [&[data-variant='primary']&&[data-active='true']]:font-bold [&[data-variant='primary']&&[data-active='true']]:rounded-md"
     );
   });
+
+  it('should correctly generate classes with no variants and sizes', () => {
+    const source = `
+    /**
+     * @component Button
+     * @target root [ text-2xl font-bold rounded-md ]
+     */
+    `;
+    const parsed = parseComponentDeclarations(source);
+    const result = generateTailwindClasses(parsed);
+    expect(result).toBe('text-2xl font-bold rounded-md');
+  });
 });
