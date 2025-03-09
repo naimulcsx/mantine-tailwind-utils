@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { generateComponents } from '../core/generate-components.js';
 import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
 
-const expected = [
-  `
+const withRestrictedPropsContent = `
 import type { ComponentType, ElementType, PropsWithChildren } from "react";
 
 export function withRestrictedProps<
@@ -30,34 +29,11 @@ export function withRestrictedProps<
 
   return RestrictedComponent;
 }
-`,
-  `
-import type { ComponentType, ElementType, PropsWithChildren } from "react";
+`;
+
+const buttonComponentContent = `
+import { withRestrictedProps } from "../with-restricted-props";
 import { Button as MantineButton, type ButtonProps as MantineButtonProps } from "@mantine/core";
-export function withRestrictedProps<
-  TElementType extends ElementType,
-  TOriginalProps extends object,
-  TAllowedProps extends keyof TOriginalProps,
-  TOverrideProps extends Partial<Record<TAllowedProps, any>> = {}
->(
-  displayName: string,
-  Component: ComponentType<TOriginalProps>,
-  defaultProps: Partial<Pick<TOriginalProps, TAllowedProps>> = {}
-) {
-  function RestrictedComponent(
-    props: PropsWithChildren<
-      Omit<Pick<TOriginalProps, TAllowedProps>, keyof TOverrideProps> &
-        TOverrideProps &
-        React.ComponentPropsWithoutRef<TElementType>
-    >
-  ) {
-    return <Component {...(defaultProps as TOriginalProps)} {...props} />;
-  }
-
-  RestrictedComponent.displayName = displayName;
-
-  return RestrictedComponent;
-}
 
 interface ButtonOverrides {
   variant?: "primary";
@@ -70,8 +46,7 @@ export const Button = withRestrictedProps<
   "fullWidth" | "loading" | "leftSection" | "rightSection" | "variant" | "size",
   ButtonOverrides
 >("Button", MantineButton);
-`,
-];
+`;
 
 const normalize = (str: string) => {
   return str.replace(/\n/g, '').replace(/\s+/g, ' ');
@@ -81,9 +56,11 @@ describe('generateComponents', () => {
   it('should generate the default file', () => {
     const content = ``;
     const componentDeclarations = parseComponentDeclarations(content);
-    const result = generateComponents(componentDeclarations);
+    const { files } = generateComponents(componentDeclarations);
 
-    expect(normalize(result.fileContent)).toBe(normalize(expected[0]));
+    expect(normalize(files[0].fileContent)).toBe(
+      normalize(withRestrictedPropsContent)
+    );
   });
 
   it('should generate the button component', () => {
@@ -97,7 +74,15 @@ describe('generateComponents', () => {
      */
     `;
     const componentDeclarations = parseComponentDeclarations(content);
-    const result = generateComponents(componentDeclarations);
-    expect(normalize(result.fileContent)).toBe(normalize(expected[1]));
+    const { files } = generateComponents(componentDeclarations);
+
+    let fileContent = '';
+    for (const file of files) {
+      if (file.path.endsWith('Button.tsx')) {
+        fileContent = file.fileContent;
+      }
+    }
+
+    expect(normalize(fileContent)).toBe(normalize(buttonComponentContent));
   });
 });

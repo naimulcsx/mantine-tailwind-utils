@@ -104,10 +104,15 @@ describe('generate-stories', () => {
      */
     `;
     const componentDeclarations = parseComponentDeclarations(content);
-    const result = generateComponents(componentDeclarations);
+    const files = generateComponents(componentDeclarations);
 
-    expect(normalize(result.stories[0].fileContent)).toBe(
-      normalize(expected[0])
-    );
+    let fileContent = '';
+    for (const file of files.files) {
+      if (file.path.endsWith('.stories.tsx')) {
+        fileContent = file.fileContent;
+      }
+    }
+
+    expect(normalize(fileContent)).toBe(normalize(expected[0]));
   });
 });

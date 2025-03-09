@@ -3,7 +3,7 @@ import { type Plugin } from 'vite';
 import path from 'path';
 import { processThemeContent } from '../core/process-theme-content.js';
 import { generateComponents } from '../core/generate-components.js';
-import { parseComponentDeclarations } from 'src/core/parse-component-declarations.js';
+import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
 
 export function mantineTailwindThemePlugin({
   themePath,
