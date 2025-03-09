@@ -23,6 +23,18 @@ const meta = {
       description: "{{componentName}} size",
     },
     {{/if}}
+    {{#if hasFullWidth}}
+    fullWidth: {
+      control: { type: "boolean" },
+      description: "{{componentName}} full width",
+    },
+    {{/if}}
+    {{#if hasLoading}}
+    loading: {
+      control: { type: "boolean" },
+      description: "{{componentName}} loading",
+    },
+    {{/if}}
     children: {
       control: "text",
       description: "{{componentName}} content",
@@ -40,6 +52,8 @@ export const {{name}}: Story = {
     {{#if args.variant}}variant: {{{args.variant}}},{{/if}}
     {{#if args.size}}size: {{{args.size}}},{{/if}}
     {{#if args.disabled}}disabled: {{{args.disabled}}},{{/if}}
+    {{#if args.loading}}loading: {{{args.loading}}},{{/if}}
+    {{#if args.fullWidth}}fullWidth: {{{args.fullWidth}}},{{/if}}
     children: {{{args.children}}},
   },
 };

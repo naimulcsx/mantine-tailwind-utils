@@ -30,7 +30,7 @@ export function generateComponents(content: string) {
         fileContent += `\n${getButton({ props, variants, sizes })}\n`;
         stories.push({
           component,
-          fileContent: getButtonStory({ variants, sizes }),
+          fileContent: getButtonStory({ props, variants, sizes }),
         });
         break;
     }
@@ -84,6 +84,7 @@ const getButton = ({
 };
 
 const getButtonStory = ({
+  props,
   variants,
   sizes,
 }: {
@@ -97,6 +98,7 @@ const getButtonStory = ({
   // Default values if not provided
   variants = variants || [];
   sizes = sizes || [];
+  props = props || [];
 
   // Create story variants based on available variants and sizes
   const stories = [];
@@ -147,6 +149,30 @@ const getButtonStory = ({
     });
   }
 
+  const hasLoading = props.includes('loading');
+  const hasFullWidth = props.includes('fullWidth');
+
+  // Loading prop
+  if (hasLoading) {
+    stories.push({
+      name: 'Loading',
+      args: {
+        loading: 'true',
+        children: '"Loading Button"',
+      },
+    });
+  }
+
+  if (hasFullWidth) {
+    stories.push({
+      name: 'FullWidth',
+      args: {
+        fullWidth: 'true',
+        children: '"Full Width Button"',
+      },
+    });
+  }
+
   // Add a disabled story using the default variant and size
   stories.push({
     name: 'Disabled',
@@ -166,6 +192,8 @@ const getButtonStory = ({
     hasVariants: variants.length > 0,
     hasSizes: sizes.length > 0,
     stories: stories,
+    hasFullWidth,
+    hasLoading,
   };
 
   return template(data);

@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { generateComponents } from '../core/generate-components.js';
-import path from 'path';
-import fs from 'fs';
 const normalize = (str: string) => {
   return str.replace(/\n/g, '').replace(/\s+/g, ' ');
 };
@@ -29,6 +27,14 @@ const meta = {
       options: ["sm"],
       description: "Button size",
     },
+    fullWidth: {
+      control: { type: "boolean" },
+      description: "Button full width",
+    },
+    loading: {
+      control: { type: "boolean" },
+      description: "Button loading",
+    },
     children: {
       control: "text",
       description: "Button content",
@@ -44,7 +50,6 @@ export const Primary: Story = {
   args: {
     variant: "primary",
     size: "sm",
-    
     children: "Primary Button",
   },
 };
@@ -54,8 +59,23 @@ export const SizeSm: Story = {
   args: {
     variant: "primary",
     size: "sm",
-    
     children: "Size Sm Button",
+  },
+};
+
+// Loading Button story
+export const Loading: Story = {
+  args: {
+    loading: true,
+    children: "Loading Button",
+  },
+};
+
+// FullWidth Button story
+export const FullWidth: Story = {
+  args: {
+    fullWidth: true,
+    children: "Full Width Button",
   },
 };
 
@@ -76,18 +96,13 @@ describe('generate-stories', () => {
     const content = `
     /**
      * @component Button
-     * @props fullWidth | loading | leftSection | rightSection
+     * @props fullWidth | loading
      *
      * @target root @size sm [ h-[42px] ]
      * @target root @variant primary [ bg-red-500 hover:bg-red-900 focus:outline-none focus-within:ring-2 focus-within:ring-yellow-500 text-xl ]
      */
     `;
     const result = generateComponents(content);
-
-    fs.writeFileSync(
-      path.join(__dirname, 'test.txt'),
-      result.stories[0].fileContent
-    );
 
     expect(normalize(result.stories[0].fileContent)).toBe(
       normalize(expected[0])
