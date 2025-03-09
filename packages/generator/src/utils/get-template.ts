@@ -4,8 +4,8 @@ import Handlebars from 'handlebars';
 
 export function getCompiledTemplate(templateName: string) {
   const templatePath = path.resolve(
-    __dirname,
-    '../templates',
+    process.cwd(),
+    'src/templates',
     `${templateName}.hbs`
   );
   const templateSource = fs.readFileSync(templatePath, 'utf-8');
