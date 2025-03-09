@@ -1,14 +1,16 @@
-import Handlebars from 'handlebars';
-import path from 'path';
-import fs from 'fs';
+import { getCompiledTemplate } from 'src/utils/get-imports.js';
 import { parseComponentDeclarations } from './parse-component-declarations.js';
 
 export function generateComponents(content: string) {
   const parsedComponents = parseComponentDeclarations(content);
 
-  let file = getImports(parsedComponents.map(({ component }) => component));
+  let fileContent = getImports(
+    parsedComponents.map(({ component }) => component)
+  );
 
-  file += getUtils();
+  fileContent += getUtils();
+
+  const stories: Array<{ component: string; fileContent: string }> = [];
 
   parsedComponents.forEach(({ component, props, styles }) => {
     const variants: string[] = [];
@@ -25,12 +27,19 @@ export function generateComponents(content: string) {
 
     switch (component) {
       case 'Button':
-        file += `\n${getButton({ props, variants, sizes })}\n`;
+        fileContent += `\n${getButton({ props, variants, sizes })}\n`;
+        stories.push({
+          component,
+          fileContent: getButtonStory({ variants, sizes }),
+        });
         break;
     }
   });
 
-  return file;
+  return {
+    fileContent,
+    stories,
+  };
 }
 
 const getImports = (components: string[]) => {
@@ -41,16 +50,6 @@ const getImports = (components: string[]) => {
 const getUtils = () => {
   const template = getCompiledTemplate('utils');
   return template({});
-};
-
-const getCompiledTemplate = (templateName: string) => {
-  const templatePath = path.resolve(
-    __dirname,
-    '../templates',
-    `${templateName}.hbs`
-  );
-  const templateSource = fs.readFileSync(templatePath, 'utf-8');
-  return Handlebars.compile(templateSource);
 };
 
 const getButton = ({
@@ -79,6 +78,94 @@ const getButton = ({
     sizeTypes: sizes?.map((s) => `"${s}"`).join(' | '),
     restrictedProps:
       props.length > 0 ? props.map((prop) => `"${prop}"`).join(' | ') : '""',
+  };
+
+  return template(data);
+};
+
+const getButtonStory = ({
+  variants,
+  sizes,
+}: {
+  props?: string[];
+  variants?: string[];
+  sizes?: string[];
+}) => {
+  // Get the compiled template
+  const template = getCompiledTemplate('button.stories');
+
+  // Default values if not provided
+  variants = variants || [];
+  sizes = sizes || [];
+
+  // Create story variants based on available variants and sizes
+  const stories = [];
+
+  // Default size and variant for stories
+  const defaultSize = sizes.length > 0 ? sizes[0] : undefined;
+  const defaultVariant = variants.length > 0 ? variants[0] : undefined;
+
+  // Generate stories for each variant (keeping default size)
+  if (variants.length > 0) {
+    for (const variant of variants) {
+      // Convert to PascalCase for story name
+      const storyName = variant.charAt(0).toUpperCase() + variant.slice(1);
+
+      stories.push({
+        name: storyName,
+        args: {
+          variant: `"${variant}"`,
+          size: defaultSize ? `"${defaultSize}"` : undefined,
+          children: `"${storyName} Button"`,
+        },
+      });
+    }
+  }
+
+  // Generate stories for each size (keeping default variant)
+  if (sizes.length > 0) {
+    for (const size of sizes) {
+      const sizeName = size.charAt(0).toUpperCase() + size.slice(1);
+      stories.push({
+        name: `Size${sizeName}`,
+        args: {
+          variant: defaultVariant ? `"${defaultVariant}"` : undefined,
+          size: `"${size}"`,
+          children: `"Size ${sizeName} Button"`,
+        },
+      });
+    }
+  }
+
+  // If no stories were generated, add a default story
+  if (stories.length === 0) {
+    stories.push({
+      name: 'Default',
+      args: {
+        children: '"Button"',
+      },
+    });
+  }
+
+  // Add a disabled story using the default variant and size
+  stories.push({
+    name: 'Disabled',
+    args: {
+      variant: defaultVariant ? `"${defaultVariant}"` : undefined,
+      size: defaultSize ? `"${defaultSize}"` : undefined,
+      disabled: 'true',
+      children: '"Disabled Button"',
+    },
+  });
+
+  // Prepare data for template
+  const data = {
+    componentName: 'Button',
+    variants: variants.map((v) => `"${v}"`),
+    sizes: sizes.map((s) => `"${s}"`),
+    hasVariants: variants.length > 0,
+    hasSizes: sizes.length > 0,
+    stories: stories,
   };
 
   return template(data);

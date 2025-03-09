@@ -82,7 +82,7 @@ describe('generateComponents', () => {
 
     const result = generateComponents(content);
 
-    expect(normalize(result)).toBe(normalize(expected[0]));
+    expect(normalize(result.fileContent)).toBe(normalize(expected[0]));
   });
 
   it('should generate the button component', () => {
@@ -96,6 +96,6 @@ describe('generateComponents', () => {
      */
     `;
     const result = generateComponents(content);
-    expect(normalize(result)).toBe(normalize(expected[1]));
+    expect(normalize(result.fileContent)).toBe(normalize(expected[1]));
   });
 });

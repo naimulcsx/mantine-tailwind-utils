@@ -1,0 +1,47 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { {{componentName}} } from "../app/components";
+
+const meta = {
+  title: "Components/{{componentName}}",
+  component: {{componentName}},
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+  argTypes: {
+    {{#if hasVariants}}
+    variant: {
+      control: { type: "select" },
+      options: [{{variants}}],
+      description: "{{componentName}} variant style",
+    },
+    {{/if}}
+    {{#if hasSizes}}
+    size: {
+      control: { type: "select" },
+      options: [{{sizes}}],
+      description: "{{componentName}} size",
+    },
+    {{/if}}
+    children: {
+      control: "text",
+      description: "{{componentName}} content",
+    },
+  },
+} satisfies Meta<typeof {{componentName}}>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+{{#each stories}}
+// {{name}} {{../componentName}} story
+export const {{name}}: Story = {
+  args: {
+    {{#if variant}}variant: {{{variant}}},{{/if}}
+    {{#if size}}size: {{{size}}},{{/if}}
+    {{#if disabled}}disabled: {{{disabled}}},{{/if}}
+    children: {{{children}}},
+  },
+};
+
+{{/each}} 

@@ -4,6 +4,15 @@ import path from 'path';
 import { processThemeContent } from '../core/process-theme-content.js';
 import { generateComponents } from '../core/generate-components.js';
 
+type StoriesConfig =
+  | {
+      generate: true;
+      outputPath: string;
+    }
+  | {
+      generate: false;
+    };
+
 export function mantineTailwindThemePlugin({
   themePath,
   outputPath,
@@ -12,12 +21,14 @@ export function mantineTailwindThemePlugin({
   themePath: string;
   outputPath: string;
   components?:
+    | false
     | {
-        enabled: true;
+        generate: true;
         outputPath: string;
+        stories?: StoriesConfig;
       }
     | {
-        enabled: false;
+        generate: false;
       };
 }): Plugin {
   let writeLock = false;
@@ -31,10 +42,24 @@ export function mantineTailwindThemePlugin({
       const updatedTheme = processThemeContent(data);
 
       // Write components file if enabled
-      if (components && components.enabled) {
+      if (components && components.generate) {
         try {
-          const componentsFile = generateComponents(data);
-          await fs.writeFile(components.outputPath, componentsFile, 'utf-8');
+          const { fileContent, stories } = generateComponents(data);
+          await fs.writeFile(components.outputPath, fileContent, 'utf-8');
+
+          if (components.stories?.generate) {
+            for (const story of stories) {
+              await fs.writeFile(
+                path.join(
+                  components.stories.outputPath,
+                  story.component + '.stories.tsx'
+                ),
+                story.fileContent,
+                'utf-8'
+              );
+            }
+          }
+
           console.log(
             '[Vite Mantine Theme Plugin] Components file updated successfully!'
           );
