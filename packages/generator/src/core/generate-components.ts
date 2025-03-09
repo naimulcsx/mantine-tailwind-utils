@@ -1,3 +1,6 @@
+import Handlebars from 'handlebars';
+import path from 'path';
+import fs from 'fs';
 import { parseComponentDeclarations } from './parse-component-declarations.js';
 
 export function generateComponents(content: string) {
@@ -22,7 +25,7 @@ export function generateComponents(content: string) {
 
     switch (component) {
       case 'Button':
-        file += getButton({ props, variants, sizes });
+        file += `\n${getButton({ props, variants, sizes })}\n`;
         break;
     }
   });
@@ -68,6 +71,16 @@ const getWithRestrictedProps = () => {
 `;
 };
 
+function getCompiledTemplate(templateName: string) {
+  const templatePath = path.resolve(
+    __dirname,
+    '../templates',
+    `${templateName}.hbs`
+  );
+  const templateSource = fs.readFileSync(templatePath, 'utf-8');
+  return Handlebars.compile(templateSource);
+}
+
 const getButton = ({
   props,
   variants,
@@ -79,42 +92,22 @@ const getButton = ({
 }) => {
   props = props || [];
 
-  // Create the interface with variant and size if they exist
-  let interfaceContent = 'interface ButtonOverrides {';
+  // Add variant and size to props if they exist
+  if (variants?.length) props.push('variant');
+  if (sizes?.length) props.push('size');
 
-  // Add variant property if variants exist
-  if (variants && variants.length > 0) {
-    const variantTypes = variants.map((v) => `"${v}"`).join(' | ');
-    interfaceContent += `\n  variant?: ${variantTypes};`;
-    props?.push('variant');
-  }
+  // Get the compiled template
+  const template = getCompiledTemplate('button');
 
-  // Add size property if sizes exist
-  if (sizes && sizes.length > 0) {
-    const sizeTypes = sizes.map((s) => `"${s}"`).join(' | ');
-    interfaceContent += `\n  size?: ${sizeTypes};`;
-    props?.push('size');
-  }
+  // Prepare data for template
+  const data = {
+    hasVariants: variants && variants.length > 0,
+    variantTypes: variants?.map((v) => `"${v}"`).join(' | '),
+    hasSizes: sizes && sizes.length > 0,
+    sizeTypes: sizes?.map((s) => `"${s}"`).join(' | '),
+    restrictedProps:
+      props.length > 0 ? props.map((prop) => `"${prop}"`).join(' | ') : '""',
+  };
 
-  interfaceContent += '\n}';
-
-  // Create the restricted props list from the props array
-  const restrictedProps =
-    props && props.length > 0
-      ? props.map((prop) => `"${prop}"`).join(' | ')
-      : '""'; // Empty string if no props
-
-  // Generate the component export
-  const componentExport = `
-export const Button = withRestrictedProps<
-  MantineButtonProps,
-  ${restrictedProps},
-  ButtonOverrides
->("Button", MantineButton);
-`;
-
-  // Combine interface and component export
-  return `${interfaceContent}
-
-${componentExport}`;
+  return template(data);
 };

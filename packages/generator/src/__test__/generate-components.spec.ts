@@ -53,11 +53,11 @@ export function withRestrictedProps<
 
   return RestrictedComponent;
 }
+
 interface ButtonOverrides {
   variant?: "primary";
   size?: "sm";
 }
-
 
 export const Button = withRestrictedProps<
   MantineButtonProps,
@@ -88,7 +88,6 @@ describe('generateComponents', () => {
     `;
 
     const result = generateComponents(content);
-
     expect(result).toBe(expected[1]);
   });
 });

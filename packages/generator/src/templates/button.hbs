@@ -1,0 +1,14 @@
+interface ButtonOverrides {
+{{#if hasVariants}}
+  variant?: {{{variantTypes}}};
+{{/if}}
+{{#if hasSizes}}
+  size?: {{{sizeTypes}}};
+{{/if}}
+}
+
+export const Button = withRestrictedProps<
+  MantineButtonProps,
+  {{{restrictedProps}}},
+  ButtonOverrides
+>("Button", MantineButton);
