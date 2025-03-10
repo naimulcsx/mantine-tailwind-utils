@@ -9,6 +9,7 @@ export function withRestrictedProps<
   TElementType extends ElementType,
   TOriginalProps extends object,
   TAllowedProps extends keyof TOriginalProps,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-object-type
   TOverrideProps extends Partial<Record<TAllowedProps, any>> = {}
 >(
   displayName: string,

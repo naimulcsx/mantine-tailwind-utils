@@ -18,7 +18,7 @@ const theme = createTheme({
          * @target root @size lg [ h-[50px] ]
          * @target root @size xl [ h-[56px] ]
          *
-         * @target root @variant primary [ bg-red-500 hover:bg-red-900 focus:outline-none focus-within:ring-2 focus-within:ring-yellow-500 ]
+         * @target root @variant primary [ bg-red-500 hover:bg-red-900 focus:outline-none focus-within:ring-2 focus-within:ring-gray-500 ]
          */
       },
     }),

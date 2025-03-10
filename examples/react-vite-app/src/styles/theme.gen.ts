@@ -7,7 +7,7 @@ const theme = createTheme({
         size: 'sm',
       },
       classNames: {
-  "root": "rounded-md [&[data-size='sm']]:h-[38px] [&[data-size='md']]:h-[44px] [&[data-size='lg']]:h-[50px] [&[data-size='xl']]:h-[56px] [&[data-variant='primary']]:bg-red-500 [&[data-variant='primary']]:hover:bg-red-900 [&[data-variant='primary']]:focus:outline-none [&[data-variant='primary']]:focus-within:ring-2 [&[data-variant='primary']]:focus-within:ring-yellow-500"
+  "root": "rounded-md [&[data-size='sm']]:h-[38px] [&[data-size='md']]:h-[44px] [&[data-size='lg']]:h-[50px] [&[data-size='xl']]:h-[56px] [&[data-variant='primary']]:bg-red-500 [&[data-variant='primary']]:hover:bg-red-900 [&[data-variant='primary']]:focus:outline-none [&[data-variant='primary']]:focus-within:ring-2 [&[data-variant='primary']]:focus-within:ring-gray-500"
 },
     }),
   },
