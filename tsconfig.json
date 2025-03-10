@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./packages/generator"
+    },
+    {
+      "path": "./examples/react-vite-app"
     }
   ]
 }
