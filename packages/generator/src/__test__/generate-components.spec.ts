@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { generateComponents } from '../core/generate-components.js';
-import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
+import { generateComponents } from '../utils/generate-components.js';
+import { parseComponentDeclarations } from '../utils/parse-component-declarations.js';
 
 const withRestrictedPropsContent = `
 import type { ComponentType, ElementType, PropsWithChildren } from "react";

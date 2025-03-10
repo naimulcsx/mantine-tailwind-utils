@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
+import { parseComponentDeclarations } from '../utils/parse-component-declarations.js';
 
 describe('parseComponentDeclarations', () => {
   it('should throw an error if the component is declared twice', () => {

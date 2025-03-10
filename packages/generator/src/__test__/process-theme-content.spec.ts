@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { processThemeContent } from '../core/process-theme-content.js';
-import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
+import { processThemeContent } from '../utils/process-theme-content.js';
+import { parseComponentDeclarations } from '../utils/parse-component-declarations.js';
 
 const sources = [
   `

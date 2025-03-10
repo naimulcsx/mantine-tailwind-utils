@@ -1,9 +1,9 @@
 import { promises as fs } from 'fs';
 import { type Plugin } from 'vite';
 import path from 'path';
-import { processThemeContent } from '../core/process-theme-content.js';
-import { generateComponents } from '../core/generate-components.js';
-import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
+import { processThemeContent } from './utils/process-theme-content.js';
+import { generateComponents } from './utils/generate-components.js';
+import { parseComponentDeclarations } from './utils/parse-component-declarations.js';
 
 export function mantineTailwindThemePlugin({
   themePath,

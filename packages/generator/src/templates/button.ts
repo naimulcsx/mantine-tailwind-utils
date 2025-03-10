@@ -1,41 +1,6 @@
-import { getCompiledTemplate } from '../templates/get-template.js';
-import { ComponentDeclaration } from './parse-component-declarations.js';
+import { getCompiledTemplate } from '../utils/get-compiled-template.js';
 
-export function generateComponents(
-  componentDeclarations: ComponentDeclaration[]
-) {
-  const files = [
-    {
-      path: 'with-restricted-props.tsx',
-      fileContent: getUtils(),
-    },
-    {
-      path: 'Button/Button.tsx',
-      fileContent: getButton({
-        props: componentDeclarations[0]?.props,
-        variants: componentDeclarations[0]?.variants,
-        sizes: componentDeclarations[0]?.sizes,
-      }),
-    },
-    {
-      path: 'Button/Button.stories.tsx',
-      fileContent: getButtonStory({
-        props: componentDeclarations[0]?.props,
-        variants: componentDeclarations[0]?.variants,
-        sizes: componentDeclarations[0]?.sizes,
-      }),
-    },
-  ];
-
-  return { files };
-}
-
-const getUtils = () => {
-  const template = getCompiledTemplate('utils');
-  return template({});
-};
-
-const getButton = ({
+export function getButton({
   props,
   variants,
   sizes,
@@ -43,7 +8,7 @@ const getButton = ({
   props?: string[];
   variants?: string[];
   sizes?: string[];
-}) => {
+}) {
   props = props || [];
 
   // Add variant and size to props if they exist
@@ -64,9 +29,9 @@ const getButton = ({
   };
 
   return template(data);
-};
+}
 
-const getButtonStory = ({
+export function getButtonStory({
   props,
   variants,
   sizes,
@@ -74,7 +39,7 @@ const getButtonStory = ({
   props?: string[];
   variants?: string[];
   sizes?: string[];
-}) => {
+}) {
   // Get the compiled template
   const template = getCompiledTemplate('button.stories');
 
@@ -180,4 +145,4 @@ const getButtonStory = ({
   };
 
   return template(data);
-};
+}

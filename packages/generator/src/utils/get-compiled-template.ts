@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 export function getCompiledTemplate(templateName: string) {
   const templateSource = fs.readFileSync(
-    path.join(__dirname, `${templateName}.hbs`),
+    path.join(__dirname, `../templates/${templateName}.hbs`),
     'utf-8'
   );
   return Handlebars.compile(templateSource);

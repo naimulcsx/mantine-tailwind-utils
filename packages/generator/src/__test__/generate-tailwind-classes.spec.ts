@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { parseComponentDeclarations } from '../core/parse-component-declarations.js';
-import { generateTailwindClasses } from '../core/generate-tailwind-classes.js';
+import { parseComponentDeclarations } from '../utils/parse-component-declarations.js';
+import { generateTailwindClasses } from '../utils/generate-tailwind-classes.js';
 
 describe('generateTailwindClasses', () => {
   it('should generate classes for empty @target line', () => {
